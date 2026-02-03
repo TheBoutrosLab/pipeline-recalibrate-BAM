@@ -27,7 +27,7 @@ String get_root_directory(String directory) {
 */
 process check_deletion_status {
     container params.docker_image_pipeval
-    containerOptions "--volume ${get_root_directory(params.metapipeline_final_output_dir)}:${get_root_directory(params.metapipeline_final_output_dir)}"
+    containerOptions "${params.container_mount_flag} ${get_root_directory(params.metapipeline_final_output_dir)}:${get_root_directory(params.metapipeline_final_output_dir)}"
 
     ext log_dir_suffix: { "-${task.index}" }
 

@@ -64,7 +64,7 @@ process run_MergeSamFiles_Picard {
     output_file_name = "${output_file_name}.bam"
     """
     set -euo pipefail
-    java -Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -Djava.io.tmpdir=${workDir} \
+    java -Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -Djava.io.tmpdir=\$(pwd) \
         -jar /usr/local/share/picard-slim-2.26.10-0/picard.jar MergeSamFiles \
         ${all_bams} \
         -OUTPUT ${output_file_name} \

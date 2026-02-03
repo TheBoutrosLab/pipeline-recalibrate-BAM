@@ -116,6 +116,16 @@ bundle_contest_hapmap_3p3_vcf_gz_tbi:
   mode: 'r'
   required: true
   help: 'Absolute path to ConEst HapMap 3p3 VCF index file'
+apptainer_library:
+  type: 'Path'
+  mode: 'r'
+  required: false
+  help: 'Absolute path to Apptainer library directory'
+apptainer_cache:
+  type: 'Path'
+  mode: 'w'
+  required: false
+  help: 'Absolute path to Apptainer cache directory'
 metapipeline_delete_input_bams:
   type: 'Bool'
   required: true
