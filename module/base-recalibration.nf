@@ -69,7 +69,7 @@ process run_BaseRecalibrator_GATK {
         "${unmapped_interval_option} --interval-set-rule UNION"
     """
     set -euo pipefail
-    gatk --java-options "-Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=${workDir}" \
+    gatk --java-options "-Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=\$(pwd)" \
         BaseRecalibrator \
         --input ${bam} \
         --reference ${reference_fasta} \
@@ -114,7 +114,7 @@ process run_GatherBQSRReports_GATK {
     input_args = recalibration_tables.collect{ "--input ${it}" }.join(' ')
     """
     set -euo pipefail
-    gatk --java-options "-Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=${workDir}" \
+    gatk --java-options "-Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=\$(pwd)" \
         GatherBQSRReports \
         ${input_args} \
         --output ${sample_id}_recalibration_table.grp
@@ -183,7 +183,7 @@ process run_ApplyBQSR_GATK {
     """
     set -euo pipefail
 
-    gatk --java-options "-Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=${workDir}" \
+    gatk --java-options "-Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=\$(pwd)" \
         ApplyBQSR \
         --input ${bam} \
         --bqsr-recal-file ${recalibration_table} \

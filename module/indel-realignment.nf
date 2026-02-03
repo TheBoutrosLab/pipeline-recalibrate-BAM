@@ -52,7 +52,7 @@ process run_RealignerTargetCreator_GATK {
     output_rtc_intervals = "${params.patient_id}_RTC_${interval_id}.intervals"
     """
     set -euo pipefail
-    java -Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=${workDir} \
+    java -Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=\$(pwd) \
         -jar /GenomeAnalysisTK.jar \
         --analysis_type RealignerTargetCreator \
         ${arg_bam} \
@@ -120,7 +120,7 @@ process run_IndelRealigner_GATK {
     output_extension = "indelrealigned-${interval_id}"
     """
     set -euo pipefail
-    java -Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=${workDir} \
+    java -Xmx${(task.memory - params.gatk_command_mem_diff).getMega()}m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -Djava.io.tmpdir=\$(pwd) \
         -jar /GenomeAnalysisTK.jar \
         --analysis_type IndelRealigner \
         ${arg_bam} \
