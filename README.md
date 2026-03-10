@@ -12,7 +12,7 @@
 
 ## Overview
 
-This pipeline takes BAMs and corresponding indices from [pipeline-align-DNA](https://github.com/uclahs-cds/pipeline-align-DNA) and performs indel realignment and BQSR. It can be run with any combination of normal and tumor samples (normal only, tumor only, normal-tumor paired, multiple normal and tumor samples).
+This pipeline takes BAMs and corresponding indices from [pipeline-align-DNA](https://github.com/theboutroslab/pipeline-align-DNA) and performs indel realignment and BQSR. It can be run with any combination of normal and tumor samples (normal only, tumor only, normal-tumor paired, multiple normal and tumor samples).
 
 ---
 
@@ -26,7 +26,7 @@ This pipeline takes BAMs and corresponding indices from [pipeline-align-DNA](htt
 
 2. Update the YAML ([Template YAMLs](input/)).
 
-3. Download the submission script (submit_nextflow_pipeline.py) from [here](https://github.com/uclahs-cds/tool-submit-nf), and submit your pipeline below.
+3. Download the submission script (submit_nextflow_pipeline.py) from [here](https://github.com/theboutroslab/tool-submit-nf), and submit your pipeline below.
 
 - YAML input
 ```
@@ -239,9 +239,9 @@ base_resource_update {
 
 ## Discussions
 
-- [Issue tracker](https://github.com/uclahs-cds/pipeline-recalibrate-BAM/issues) to report errors and enhancement ideas.
-- Discussions can take place in [recalibrate-BAM Discussions](https://github.com/uclahs-cds/pipeline-recalibrate-BAM/discussions)
-- [recalibrate-BAM pull requests](https://github.com/uclahs-cds/pipeline-recalibrate-BAM/pulls) are also open for discussion
+- [Issue tracker](https://github.com/theboutroslab/pipeline-recalibrate-BAM/issues) to report errors and enhancement ideas.
+- Discussions can take place in [recalibrate-BAM Discussions](https://github.com/theboutroslab/pipeline-recalibrate-BAM/discussions)
+- [recalibrate-BAM pull requests](https://github.com/theboutroslab/pipeline-recalibrate-BAM/pulls) are also open for discussion
 
 ---
 
@@ -249,7 +249,7 @@ base_resource_update {
 
 > Update link to repo-specific URL for GitHub Insights Contributors page.
 
-Please see list of [Contributors](https://github.com/uclahs-cds/pipeline-recalibrate-BAM/graphs/contributors) at GitHub.
+Please see list of [Contributors](https://github.com/theboutroslab/pipeline-recalibrate-BAM/graphs/contributors) at GitHub.
 
 ---
 
