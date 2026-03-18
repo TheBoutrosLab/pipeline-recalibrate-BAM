@@ -37,6 +37,9 @@
     "timeline.file"
   ],
   "expected_result": {
+    "apptainer": {
+      "enabled": false
+    },
     "docker": {
       "all_group_ids": "$(for i in `id --real --groups`; do echo -n \"--group-add=$i \"; done)",
       "enabled": true,
@@ -143,6 +146,7 @@
       "bundle_v0_dbsnp138_vcf_gz": "/hot/resource/tool-specific-input/GATK/GRCh38/resources_broad_hg38_v0_Homo_sapiens_assembly38.dbsnp138.vcf.gz",
       "bundle_v0_dbsnp138_vcf_gz_tbi": "/hot/resource/tool-specific-input/GATK/GRCh38/resources_broad_hg38_v0_Homo_sapiens_assembly38.dbsnp138.vcf.gz.tbi",
       "cache_intermediate_pipeline_steps": false,
+      "container_mount_flag": "-v",
       "dataset_id": "A-mini",
       "docker_container_registry": "ghcr.io/uclahs-cds",
       "docker_image_gatk": "broadinstitute/gatk:4.2.4.1",
