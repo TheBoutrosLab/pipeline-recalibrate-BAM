@@ -6,9 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [2.0.0] - 2026-04-23
 
-## Added
+### Added
 
 - Options for selecting combination of BQSR and IndelRealignment
 - Resource allocations for validation process
@@ -107,10 +107,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Schema validation
 - Documentation
 
-[1.0.0]: https://github.com/uclahs-cds/pipeline-recalibrate-BAM/compare/v1.0.0-rc.4...v1.0.0
-[1.0.0-rc.1]: https://github.com/uclahs-cds/pipeline-recalibrate-BAM/releases/tag/v1.0.0-rc.1
-[1.0.0-rc.2]: https://github.com/uclahs-cds/pipeline-recalibrate-BAM/compare/v1.0.0-rc.1...v1.0.0-rc.2
-[1.0.0-rc.3]: https://github.com/uclahs-cds/pipeline-recalibrate-BAM/compare/v1.0.0-rc.2...v1.0.0-rc.3
-[1.0.0-rc.4]: https://github.com/uclahs-cds/pipeline-recalibrate-BAM/compare/v1.0.0-rc.3...v1.0.0-rc.4
-[1.0.1]: https://github.com/uclahs-cds/pipeline-recalibrate-BAM/compare/v1.0.0...v1.0.1
-[1.0.2]: https://github.com/uclahs-cds/pipeline-recalibrate-BAM/compare/v1.0.1...v1.0.2
+[1.0.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v1.0.0-rc.4...v1.0.0
+[1.0.0-rc.1]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/releases/tag/v1.0.0-rc.1
+[1.0.0-rc.2]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v1.0.0-rc.1...v1.0.0-rc.2
+[1.0.0-rc.3]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v1.0.0-rc.2...v1.0.0-rc.3
+[1.0.0-rc.4]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v1.0.0-rc.3...v1.0.0-rc.4
+[1.0.1]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v1.0.0...v1.0.1
+[1.0.2]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v1.0.1...v1.0.2
+[2.0.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v1.0.2...v2.0.0
