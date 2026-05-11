@@ -12,13 +12,14 @@
 */
 process run_index_SAMtools {
     container params.docker_image_samtools
-    publishDir path: "${params.output_dir_base}/output",
+    publishDir path: "${META.output_dir_base}/output",
         mode: "copy",
         pattern: "*.bai"
 
     ext log_dir_suffix: { "-${sample_id}" }
 
     input:
+    val(META)
     tuple val(sample_id), path(bam)
 
     output:
