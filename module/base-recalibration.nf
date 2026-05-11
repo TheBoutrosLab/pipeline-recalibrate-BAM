@@ -1,13 +1,7 @@
 include { generate_standard_filename } from '../external/pipeline-Nextflow-module/modules/common/generate_standardized_filename/main.nf'
 include {
     remove_intermediate_files
-    } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf' addParams(
-        options: [
-            save_intermediate_files: params.save_intermediate_files,
-            output_dir: params.output_dir_base,
-            log_output_dir: "${params.log_output_dir}/process-log"
-            ]
-        )
+    } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf'
 include { delete_input } from './delete-input.nf'
 /*
     Nextflow module for generating base recalibration table
@@ -204,6 +198,10 @@ workflow recalibrate_base {
     input_samples
 
     main:
+    remove_meta = Channel.value([
+        'log_output_dir': "${params.log_output_dir}/process-log"
+    ])
+
     /**
     *   BaseRecalibrator
     */
@@ -331,7 +329,7 @@ workflow recalibrate_base {
     if (params.run_indelrealignment) {
         // Delete input to BQSR as intermediate files
         remove_intermediate_files(
-            run_ApplyBQSR_GATK.out.output_ch_deletion.flatten(),
+            remove_meta.combine(run_ApplyBQSR_GATK.out.output_ch_deletion.flatten()),
             "bqsr_complete"
         )
     } else {
