@@ -43,12 +43,7 @@ Starting workflow...
 ------------------------------------
         """
 
-include { run_validate_PipeVal_with_metadata } from './external/pipeline-Nextflow-module/modules/PipeVal/validate/main.nf' addParams(
-    options: [
-        docker_image_version: params.pipeval_version,
-        main_process: "./" //Save logs in <log_dir>/process-log/run_validate_PipeVal
-        ]
-    )
+include { run_validate_PipeVal } from './external/pipeline-Nextflow-module/modules/PipeVal/validate/main.nf'
 include { run_SplitIntervals_GATK } from './module/split-intervals.nf'
 include { extract_GenomeIntervals } from './external/pipeline-Nextflow-module/modules/common/extract_genome_intervals/main.nf' addParams(
     options: [
@@ -91,16 +86,21 @@ workflow {
         }
         .set{ samples_with_index }
 
-    samples_with_index
-        .flatMap { full_sample ->
-            def all_metadata = full_sample.findAll { it.key != "bam" }
-            return [
-                [full_sample.bam, [all_metadata, "bam"]],
-                [full_sample.index, [[id: full_sample.id], "index"]]
-            ]
-        } | run_validate_PipeVal_with_metadata
+    base_meta = Channel.value([
+        'log_output_dir': params.log_output_dir,
+        'output_dir': params.output_dir_base
+    ])
 
-    run_validate_PipeVal_with_metadata.out.validation_result
+    samples_with_index
+        .map { sample -> [sample.bam, sample.index] }
+        .flatten()
+        .set{ input_ch_validate }
+
+    run_validate_PipeVal(
+        base_meta.combine(input_ch_validate)
+    )
+
+    run_validate_PipeVal.out.validation_result
         .collectFile(
             name: 'input_validation.txt',
             storeDir: "${params.output_dir_base}/validation"
