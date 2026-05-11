@@ -3,12 +3,12 @@
         "run_validate_PipeVal": {
             "cpus": {
                 "min": 1,
-                "fraction": 0.06,
+                "fraction": 0.5,
                 "max": 1
             },
             "memory": {
                 "min": "1 GB",
-                "fraction": 0.03,
+                "fraction": 0.26,
                 "max": "1 GB"
             }
         },
@@ -21,18 +21,6 @@
             "memory": {
                 "min": "1 GB",
                 "fraction": 0.03,
-                "max": "1 GB"
-            }
-        },
-        "run_validate_PipeVal_with_metadata": {
-            "cpus": {
-                "min": 1,
-                "fraction": 0.5,
-                "max": 1
-            },
-            "memory": {
-                "min": "1 GB",
-                "fraction": 0.26,
                 "max": "1 GB"
             }
         },
@@ -254,7 +242,7 @@
         }
     },
     "f8": {
-        "run_validate_PipeVal_with_metadata": {
+        "run_validate_PipeVal": {
             "cpus": {
                 "min": 1,
                 "fraction": 0.125,
@@ -598,18 +586,6 @@
                 "max": "1 GB"
             }
         },
-        "run_validate_PipeVal_with_metadata": {
-            "cpus": {
-                "min": 1,
-                "fraction": 0.06,
-                "max": 1
-            },
-            "memory": {
-                "min": "1 GB",
-                "fraction": 0.03,
-                "max": "1 GB"
-            }
-        },
         "extract_GenomeIntervals": {
             "cpus": {
                 "min": 1,
@@ -909,18 +885,6 @@
             "memory": {
                 "min": "1 GB",
                 "fraction": 0.03,
-                "max": "1 GB"
-            }
-        },
-        "run_validate_PipeVal_with_metadata": {
-            "cpus": {
-                "min": 1,
-                "fraction": 0.03,
-                "max": 1
-            },
-            "memory": {
-                "min": "1 GB",
-                "fraction": 0.02,
                 "max": "1 GB"
             }
         },
@@ -1226,18 +1190,6 @@
                 "max": "1 GB"
             }
         },
-        "run_validate_PipeVal_with_metadata": {
-            "cpus": {
-                "min": 1,
-                "fraction": 0.01,
-                "max": 1
-            },
-            "memory": {
-                "min": "1 GB",
-                "fraction": 0.01,
-                "max": "1 GB"
-            }
-        },
         "extract_GenomeIntervals": {
             "cpus": {
                 "min": 1,
@@ -1537,18 +1489,6 @@
             "memory": {
                 "min": "1 GB",
                 "fraction": 0.03,
-                "max": "1 GB"
-            }
-        },
-        "run_validate_PipeVal_with_metadata": {
-            "cpus": {
-                "min": 1,
-                "fraction": 0.02,
-                "max": 1
-            },
-            "memory": {
-                "min": "1 GB",
-                "fraction": 0.00,
                 "max": "1 GB"
             }
         },
