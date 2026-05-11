@@ -21,12 +21,12 @@ include { calculate_sha512 } from './checksum.nf'
 */
 process run_MergeSamFiles_Picard {
     container params.docker_image_picard
-    publishDir path: "${params.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
         mode: "copy",
         enabled: !params.parallelize_by_chromosome && params.save_intermediate_files,
         pattern: "${output_file_name}"
 
-    publishDir path: "${params.output_dir_base}/output",
+    publishDir path: "${META.output_dir_base}/output",
         mode: "copy",
         enabled: params.parallelize_by_chromosome,
         pattern: "${output_file_name}"
@@ -34,6 +34,7 @@ process run_MergeSamFiles_Picard {
     ext log_dir_suffix: { "-${sample_id}" }
 
     input:
+    val(META)
     tuple val(sample_id), path(bams)
 
     output:
@@ -88,7 +89,7 @@ process run_MergeSamFiles_Picard {
 */
 process deduplicate_records_SAMtools {
     container params.docker_image_samtools
-    publishDir path: "${params.output_dir_base}/output",
+    publishDir path: "${META.output_dir_base}/output",
         mode: "copy",
         pattern: "${output_file_name}"
 
@@ -98,6 +99,7 @@ process deduplicate_records_SAMtools {
     !params.parallelize_by_chromosome
 
     input:
+    val(META)
     tuple val(sample_id), path(bam)
 
     output:
@@ -133,15 +135,24 @@ workflow mergesamfiles {
     remove_meta = Channel.value([
         'log_output_dir': "${params.log_output_dir}/process-log"
     ])
+    workflow_meta = Channel.value([
+        'output_dir_base': params.output_dir_base
+    ])
 
     bams_to_merge
         .map{ [it.sample_id, it.bam] }
         .groupTuple()
         .set{ input_ch_merge }
 
-    run_MergeSamFiles_Picard(input_ch_merge)
+    run_MergeSamFiles_Picard(
+        workflow_meta,
+        input_ch_merge
+    )
 
-    deduplicate_records_SAMtools(run_MergeSamFiles_Picard.out.merged_bam)
+    deduplicate_records_SAMtools(
+        workflow_meta,
+        run_MergeSamFiles_Picard.out.merged_bam
+    )
 
     remove_merged_BAM(
         remove_meta.combine(deduplicate_records_SAMtools.out.bam_for_deletion.flatten()),
@@ -152,7 +163,10 @@ workflow mergesamfiles {
         run_MergeSamFiles_Picard.out.merged_bam :
         deduplicate_records_SAMtools.out.dedup_bam
 
-    run_index_SAMtools(input_ch_index)
+    run_index_SAMtools(
+        workflow_meta,
+        input_ch_index
+    )
 
     run_index_SAMtools.out.indexed_out
         .map{
@@ -169,7 +183,10 @@ workflow mergesamfiles {
         .flatten()
         .set{ input_ch_calculate_sha512 }
 
-    calculate_sha512(input_ch_calculate_sha512)
+    calculate_sha512(
+        workflow_meta,
+        input_ch_calculate_sha512
+    )
 
     emit:
     merged_bams = output_ch_merge_bams
