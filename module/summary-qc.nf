@@ -20,7 +20,7 @@ include { generate_standard_filename; sanitize_string } from '../external/pipeli
 */
 process run_GetPileupSummaries_GATK {
     container params.docker_image_gatk
-    publishDir path: "${params.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
       when: params.save_intermediate_files,
       pattern: '*.table'
@@ -30,6 +30,7 @@ process run_GetPileupSummaries_GATK {
     ext log_dir_suffix: { "-${sample_id}-${interval_id}" }
 
     input:
+    val(META)
     path(reference_fasta)
     path(reference_fasta_fai)
     path(reference_fasta_dict)
@@ -81,7 +82,7 @@ process run_GetPileupSummaries_GATK {
 */
 process run_GatherPileupSummaries_GATK {
     container params.docker_image_gatk
-    publishDir path: "${params.output_dir_base}/QC/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/QC/${task.process.replace(':', '/')}",
       mode: "copy",
       pattern: '*.table'
 
@@ -90,6 +91,7 @@ process run_GatherPileupSummaries_GATK {
     ext log_dir_suffix: { "-${sample_id}" }
 
     input:
+    val(META)
     path(reference_fasta_dict)
     tuple val(sample_id), path(pileupsummaries)
 
@@ -132,13 +134,14 @@ process run_GatherPileupSummaries_GATK {
 */
 process run_CalculateContamination_GATK {
     container params.docker_image_gatk
-    publishDir path: "${params.output_dir_base}/QC/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/QC/${task.process.replace(':', '/')}",
       mode: "copy",
       pattern: '*.table'
 
     ext log_dir_suffix: { "-${sample_id}" }
 
     input:
+    val(META)
     tuple val(normal_id), path(normal_pileup), val(tumor_id), path(tumor_pileup), val(sample_type)
 
     output:
@@ -194,13 +197,14 @@ process run_CalculateContamination_GATK {
 */
 process run_DepthOfCoverage_GATK {
     container params.docker_image_gatk
-    publishDir path: "${params.output_dir_base}/QC/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/QC/${task.process.replace(':', '/')}",
       mode: "copy",
       pattern: '*_DOC*'
 
     ext log_dir_suffix: { "-${sample_id}" }
 
     input:
+    val(META)
     path(reference_fasta)
     path(reference_fasta_fai)
     path(reference_fasta_dict)
@@ -247,6 +251,10 @@ workflow contamination_qc {
     samples_with_index
 
     main:
+    workflow_meta = Channel.value([
+        'output_dir_base': params.output_dir_base
+    ])
+
     bams_for_qc
         .map{ input_bam ->
             [
@@ -262,6 +270,7 @@ workflow contamination_qc {
     input_intervals = (params.is_targeted) ? params.intervals : "${params.work_dir}/NO_FILE.interval_list"
 
     run_GetPileupSummaries_GATK(
+        workflow_meta,
         params.reference_fasta,
         params.reference_fasta_fai,
         params.reference_fasta_dict,
@@ -277,6 +286,7 @@ workflow contamination_qc {
         .set{ input_ch_gathersummaries }
 
     run_GatherPileupSummaries_GATK(
+        workflow_meta,
         params.reference_fasta_dict,
         input_ch_gathersummaries
     )
@@ -321,7 +331,10 @@ workflow contamination_qc {
             .set{ input_ch_calculate_contamination }
     }
 
-    run_CalculateContamination_GATK(input_ch_calculate_contamination)
+    run_CalculateContamination_GATK(
+        workflow_meta,
+        input_ch_calculate_contamination
+    )
 
     emit:
     pileupsgathered = pileupsgathered
