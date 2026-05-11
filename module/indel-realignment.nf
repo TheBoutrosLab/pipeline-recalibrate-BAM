@@ -24,7 +24,7 @@ include { generate_standard_filename } from '../external/pipeline-Nextflow-modul
 */
 process run_RealignerTargetCreator_GATK {
     container params.docker_image_gatk3
-    publishDir path: "${params.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
       enabled: params.save_intermediate_files,
       pattern: "*_RTC_*.intervals"
@@ -32,6 +32,7 @@ process run_RealignerTargetCreator_GATK {
     ext log_dir_suffix: { "-${interval_id}" }
 
     input:
+    val(META)
     path(reference_fasta)
     path(reference_fasta_fai)
     path(reference_fasta_dict)
@@ -92,7 +93,7 @@ process run_RealignerTargetCreator_GATK {
 */
 process run_IndelRealigner_GATK {
     container params.docker_image_gatk3
-    publishDir path: "${params.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
       enabled: params.save_intermediate_files,
       pattern: "*indelrealigned*",
@@ -101,6 +102,7 @@ process run_IndelRealigner_GATK {
     ext log_dir_suffix: { "-${interval_id}" }
 
     input:
+    val(META)
     path(reference_fasta)
     path(reference_fasta_fai)
     path(reference_fasta_dict)
@@ -140,6 +142,10 @@ workflow realign_indels {
     ir_input
 
     main:
+    workflow_meta = Channel.value([
+        'output_dir_base': params.output_dir_base
+    ])
+
     ir_input
         .map{ it ->
             [
@@ -153,6 +159,7 @@ workflow realign_indels {
         .set{ input_ch_rtc }
 
     run_RealignerTargetCreator_GATK(
+        workflow_meta,
         params.reference_fasta,
         params.reference_fasta_fai,
         params.reference_fasta_dict,
@@ -165,6 +172,7 @@ workflow realign_indels {
         )
 
     run_IndelRealigner_GATK(
+        workflow_meta,
         params.reference_fasta,
         params.reference_fasta_fai,
         params.reference_fasta_dict,
