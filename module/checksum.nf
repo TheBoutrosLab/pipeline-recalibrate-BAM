@@ -11,7 +11,7 @@
 */
 process calculate_sha512 {
     container params.docker_image_pipeval
-    publishDir path: "${params.output_dir_base}/output",
+    publishDir path: "${META.output_dir_base}/output",
       mode: "copy",
       pattern: "*.sha512",
       saveAs: { filename -> (filename.endsWith(".bai.sha512") && !filename.endsWith(".bam.bai.sha512")) ? "${file(file(filename).baseName).baseName}.bam.bai.sha512" : "${filename}"}
@@ -19,6 +19,7 @@ process calculate_sha512 {
     ext log_dir_suffix: { "/${task.process.split(':')[-1]}-${task.index}" }
 
     input:
+    val(META)
     path(file_for_calc)
 
     output:

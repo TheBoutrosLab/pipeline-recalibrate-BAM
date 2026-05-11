@@ -16,12 +16,13 @@
 process run_SplitIntervals_GATK {
     container params.docker_image_gatk
 
-    publishDir path: "${params.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
                mode: "copy",
                pattern: "*-contig.interval_list",
                enabled: params.save_intermediate_files
 
     input:
+    val(META)
     path intervals
     path reference_fasta
     path reference_fasta_index

@@ -1,13 +1,4 @@
 include { generate_standard_filename } from '../external/pipeline-Nextflow-module/modules/common/generate_standardized_filename/main.nf'
-// include {
-//     remove_intermediate_files as remove_ungathered_BAMs
-//     } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf' addParams(
-//         options: [
-//             save_intermediate_files: params.save_intermediate_files,
-//             output_dir: params.output_dir_base,
-//             log_output_dir: "${params.log_output_dir}/process-log"
-//             ]
-//         )
 include { calculate_sha512 } from './checksum.nf'
 
 List getChromosomeOrderFromDict(dictPath) {
@@ -48,13 +39,14 @@ List getChromosomeOrderFromDict(dictPath) {
 */
 process run_GatherBamFiles_Picard {
     container params.docker_image_picard
-    publishDir path: "${params.output_dir_base}/output",
+    publishDir path: "${META.output_dir_base}/output",
         mode: "copy",
         pattern: "${output_file_name}.bam*"
 
     ext log_dir_suffix: { "-${sample_id}" }
 
     input:
+    val(META)
     tuple val(sample_id), path(bams)
 
     output:
@@ -90,6 +82,10 @@ workflow gatherbams {
     bams_to_merge
 
     main:
+    workflow_meta = Channel.value([
+        'output_dir_base': params.output_dir_base
+    ])
+
     List chromosome_list = getChromosomeOrderFromDict(params.reference_fasta_dict)
     Map sort_key_map = [:]
     chromosome_list.eachWithIndex { item, index ->
@@ -121,12 +117,10 @@ workflow gatherbams {
         }
         .set{ input_ch_gatherbams }
 
-    run_GatherBamFiles_Picard(input_ch_gatherbams)
-
-    // remove_ungathered_BAMs(
-    //     run_GatherBamFiles_Picard.out.bams_for_deletion.flatten(),
-    //     "gather_complete"
-    // )
+    run_GatherBamFiles_Picard(
+        workflow_meta,
+        input_ch_gatherbams
+    )
 
     run_GatherBamFiles_Picard.out.gathered_bam
         .map{ a_gathered_bam ->
@@ -143,7 +137,10 @@ workflow gatherbams {
         .flatten()
         .set{ input_ch_calculate_sha512 }
 
-    calculate_sha512(input_ch_calculate_sha512)
+    calculate_sha512(
+        workflow_meta,
+        input_ch_calculate_sha512
+    )
 
     emit:
     gathered_bams = output_ch_gathered_bams

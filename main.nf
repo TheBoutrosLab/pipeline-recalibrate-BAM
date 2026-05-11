@@ -43,28 +43,12 @@ Starting workflow...
 ------------------------------------
         """
 
-include { run_validate_PipeVal_with_metadata } from './external/pipeline-Nextflow-module/modules/PipeVal/validate/main.nf' addParams(
-    options: [
-        docker_image_version: params.pipeval_version,
-        main_process: "./" //Save logs in <log_dir>/process-log/run_validate_PipeVal
-        ]
-    )
+include { run_validate_PipeVal } from './external/pipeline-Nextflow-module/modules/PipeVal/validate/main.nf'
 include { run_SplitIntervals_GATK } from './module/split-intervals.nf'
-include { extract_GenomeIntervals } from './external/pipeline-Nextflow-module/modules/common/extract_genome_intervals/main.nf' addParams(
-    options: [
-        save_intermediate_files: params.save_intermediate_files,
-        output_dir: params.output_dir_base
-        ]
-    )
+include { extract_GenomeIntervals } from './external/pipeline-Nextflow-module/modules/common/extract_genome_intervals/main.nf'
 include {
     remove_intermediate_files as remove_interval_BAMs
-    } from './external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf' addParams(
-        options: [
-            save_intermediate_files: params.save_intermediate_files,
-            output_dir: params.output_dir_base,
-            log_output_dir: "${params.log_output_dir}/process-log"
-            ]
-        )
+    } from './external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf'
 include { indexFile } from './external/pipeline-Nextflow-module/modules/common/indexFile/main.nf'
 include { realign_indels } from './module/indel-realignment.nf'
 include { recalibrate_base } from './module/base-recalibration.nf'
@@ -91,16 +75,26 @@ workflow {
         }
         .set{ samples_with_index }
 
-    samples_with_index
-        .flatMap { full_sample ->
-            def all_metadata = full_sample.findAll { it.key != "bam" }
-            return [
-                [full_sample.bam, [all_metadata, "bam"]],
-                [full_sample.index, [[id: full_sample.id], "index"]]
-            ]
-        } | run_validate_PipeVal_with_metadata
+    base_meta = Channel.value([
+        'log_output_dir': params.log_output_dir,
+        'output_dir': params.output_dir_base,
+        'output_dir_base': params.output_dir_base
+    ])
 
-    run_validate_PipeVal_with_metadata.out.validation_result
+    remove_meta = Channel.value([
+        'log_output_dir': "${params.log_output_dir}/process-log"
+    ])
+
+    samples_with_index
+        .map { sample -> [sample.bam, sample.index] }
+        .flatten()
+        .set{ input_ch_validate }
+
+    run_validate_PipeVal(
+        base_meta.combine(input_ch_validate)
+    )
+
+    run_validate_PipeVal.out.validation_result
         .collectFile(
             name: 'input_validation.txt',
             storeDir: "${params.output_dir_base}/validation"
@@ -110,10 +104,17 @@ workflow {
     /**
     *   Interval extraction and splitting
     */
-    extract_GenomeIntervals(params.reference_fasta_dict)
+    extract_GenomeIntervals(
+        base_meta.map{ metadata -> [metadata, params.reference_fasta_dict] }
+    )
+
+    extract_GenomeIntervals.out.genomic_intervals
+        .map{ genome_intervals -> genome_intervals[1] }
+        .set{ genomic_intervals }
 
     run_SplitIntervals_GATK(
-        extract_GenomeIntervals.out.genomic_intervals,
+        base_meta,
+        genomic_intervals,
         params.reference_fasta,
         params.reference_fasta_fai,
         params.reference_fasta_dict
@@ -242,7 +243,7 @@ workflow {
         .set{ input_ch_delete_interval_bams }
 
     remove_interval_BAMs(
-        input_ch_delete_interval_bams,
+        remove_meta.combine(input_ch_delete_interval_bams),
         "ready_to_delete"
     )
 
@@ -255,13 +256,14 @@ workflow {
 
     summary_intervals = (params.is_targeted) ?
         Channel.from(params.intervals).collect() :
-        extract_GenomeIntervals.out.genomic_intervals
+        genomic_intervals
 
     summary_intervals.combine(input_ch_merged_bams)
         .map{ it[0] }
         .set{ input_ch_summary_intervals }
 
     run_DepthOfCoverage_GATK(
+        base_meta,
         params.reference_fasta,
         params.reference_fasta_fai,
         params.reference_fasta_dict,
