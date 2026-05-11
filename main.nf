@@ -45,12 +45,7 @@ Starting workflow...
 
 include { run_validate_PipeVal } from './external/pipeline-Nextflow-module/modules/PipeVal/validate/main.nf'
 include { run_SplitIntervals_GATK } from './module/split-intervals.nf'
-include { extract_GenomeIntervals } from './external/pipeline-Nextflow-module/modules/common/extract_genome_intervals/main.nf' addParams(
-    options: [
-        save_intermediate_files: params.save_intermediate_files,
-        output_dir: params.output_dir_base
-        ]
-    )
+include { extract_GenomeIntervals } from './external/pipeline-Nextflow-module/modules/common/extract_genome_intervals/main.nf'
 include {
     remove_intermediate_files as remove_interval_BAMs
     } from './external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf' addParams(
@@ -110,10 +105,16 @@ workflow {
     /**
     *   Interval extraction and splitting
     */
-    extract_GenomeIntervals(params.reference_fasta_dict)
+    extract_GenomeIntervals(
+        base_meta.map{ metadata -> [metadata, params.reference_fasta_dict] }
+    )
+
+    extract_GenomeIntervals.out.genomic_intervals
+        .map{ genome_intervals -> genome_intervals[1] }
+        .set{ genomic_intervals }
 
     run_SplitIntervals_GATK(
-        extract_GenomeIntervals.out.genomic_intervals,
+        genomic_intervals,
         params.reference_fasta,
         params.reference_fasta_fai,
         params.reference_fasta_dict
@@ -255,7 +256,7 @@ workflow {
 
     summary_intervals = (params.is_targeted) ?
         Channel.from(params.intervals).collect() :
-        extract_GenomeIntervals.out.genomic_intervals
+        genomic_intervals
 
     summary_intervals.combine(input_ch_merged_bams)
         .map{ it[0] }
