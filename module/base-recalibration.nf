@@ -1,13 +1,7 @@
 include { generate_standard_filename } from '../external/pipeline-Nextflow-module/modules/common/generate_standardized_filename/main.nf'
 include {
     remove_intermediate_files
-    } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf' addParams(
-        options: [
-            save_intermediate_files: params.save_intermediate_files,
-            output_dir: params.output_dir_base,
-            log_output_dir: "${params.log_output_dir}/process-log"
-            ]
-        )
+    } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf'
 include { delete_input } from './delete-input.nf'
 /*
     Nextflow module for generating base recalibration table
@@ -37,7 +31,7 @@ include { delete_input } from './delete-input.nf'
 */
 process run_BaseRecalibrator_GATK {
     container params.docker_image_gatk
-    publishDir path: "${params.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
       enabled: params.save_intermediate_files,
       pattern: "*.grp"
@@ -45,6 +39,7 @@ process run_BaseRecalibrator_GATK {
     ext log_dir_suffix: { "-${sample_id}-${interval_id}" }
 
     input:
+    val(META)
     path(reference_fasta)
     path(reference_fasta_fai)
     path(reference_fasta_dict)
@@ -98,13 +93,14 @@ process run_BaseRecalibrator_GATK {
 */
 process run_GatherBQSRReports_GATK {
     container params.docker_image_gatk
-    publishDir path: "${params.output_dir_base}/QC/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/QC/${task.process.replace(':', '/')}",
       mode: "copy",
       pattern: "*.grp"
 
     ext log_dir_suffix: { "-${sample_id}" }
 
     input:
+    val(META)
     tuple val(sample_id), path(recalibration_tables)
 
     output:
@@ -145,7 +141,7 @@ process run_GatherBQSRReports_GATK {
 */
 process run_ApplyBQSR_GATK {
     container params.docker_image_gatk
-    publishDir path: "${params.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
+    publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
       enabled: params.save_intermediate_files,
       pattern: "*_recalibrated-*"
@@ -153,6 +149,7 @@ process run_ApplyBQSR_GATK {
     ext log_dir_suffix: { "-${sample_id}-${interval_id}" }
 
     input:
+    val(META)
     path(reference_fasta)
     path(reference_fasta_fai)
     path(reference_fasta_dict)
@@ -204,6 +201,13 @@ workflow recalibrate_base {
     input_samples
 
     main:
+    remove_meta = Channel.value([
+        'log_output_dir': "${params.log_output_dir}/process-log"
+    ])
+    workflow_meta = Channel.value([
+        'output_dir_base': params.output_dir_base
+    ])
+
     /**
     *   BaseRecalibrator
     */
@@ -229,6 +233,7 @@ workflow recalibrate_base {
     input_intervals = (params.is_targeted) ? params.intervals : "${params.work_dir}/NO_FILE.interval_list"
 
     run_BaseRecalibrator_GATK(
+        workflow_meta,
         params.reference_fasta,
         params.reference_fasta_fai,
         params.reference_fasta_dict,
@@ -259,7 +264,10 @@ workflow recalibrate_base {
         .groupTuple(by: 0)
         .set{ input_ch_gatherbqsr }
 
-    run_GatherBQSRReports_GATK(input_ch_gatherbqsr)
+    run_GatherBQSRReports_GATK(
+        workflow_meta,
+        input_ch_gatherbqsr
+    )
 
 
     /**
@@ -305,6 +313,7 @@ workflow recalibrate_base {
         .set{ input_ch_apply_bqsr }
 
     run_ApplyBQSR_GATK(
+        workflow_meta,
         params.reference_fasta,
         params.reference_fasta_fai,
         params.reference_fasta_dict,
@@ -331,7 +340,7 @@ workflow recalibrate_base {
     if (params.run_indelrealignment) {
         // Delete input to BQSR as intermediate files
         remove_intermediate_files(
-            run_ApplyBQSR_GATK.out.output_ch_deletion.flatten(),
+            remove_meta.combine(run_ApplyBQSR_GATK.out.output_ch_deletion.flatten()),
             "bqsr_complete"
         )
     } else {
