@@ -1,12 +1,6 @@
 nextflow.enable.dsl=2
 
-include { remove_intermediate_files } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf' addParams(
-    options: [
-        save_intermediate_files: !params.metapipeline_delete_input_bams || params.save_intermediate_files,
-        output_dir: params.output_dir_base,
-        log_output_dir: "${params.log_output_dir}/process-log"
-        ]
-    )
+include { remove_intermediate_files } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf'
 
 String get_root_directory(String directory) {
     Path root_directory = new File(directory).toPath()
@@ -81,6 +75,10 @@ workflow delete_input {
     files_to_delete
 
     main:
+    remove_meta = Channel.value([
+        'log_output_dir': "${params.log_output_dir}/process-log"
+    ])
+
     check_deletion_status(files_to_delete)
 
     check_deletion_status.out.file_to_delete
@@ -88,8 +86,10 @@ workflow delete_input {
         .map{ it -> it[0] }
         .set{ files_to_delete }
 
-    remove_intermediate_files(
-        files_to_delete,
-        "ready_to_delete"
+    if (params.metapipeline_delete_input_bams) {
+        remove_intermediate_files(
+            remove_meta.combine(files_to_delete),
+            "ready_to_delete"
         )
+    }
 }
