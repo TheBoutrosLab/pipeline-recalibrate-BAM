@@ -77,7 +77,8 @@ workflow {
 
     base_meta = Channel.value([
         'log_output_dir': params.log_output_dir,
-        'output_dir': params.output_dir_base
+        'output_dir': params.output_dir_base,
+        'output_dir_base': params.output_dir_base
     ])
 
     remove_meta = Channel.value([
@@ -112,6 +113,7 @@ workflow {
         .set{ genomic_intervals }
 
     run_SplitIntervals_GATK(
+        base_meta,
         genomic_intervals,
         params.reference_fasta,
         params.reference_fasta_fai,
@@ -261,6 +263,7 @@ workflow {
         .set{ input_ch_summary_intervals }
 
     run_DepthOfCoverage_GATK(
+        base_meta,
         params.reference_fasta,
         params.reference_fasta_fai,
         params.reference_fasta_dict,
