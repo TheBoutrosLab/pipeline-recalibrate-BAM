@@ -1,14 +1,7 @@
 include { generate_standard_filename } from '../external/pipeline-Nextflow-module/modules/common/generate_standardized_filename/main.nf'
 include {
-    // remove_intermediate_files as remove_unmerged_BAMs
     remove_intermediate_files as remove_merged_BAM
-    } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf' addParams(
-        options: [
-            save_intermediate_files: params.save_intermediate_files,
-            output_dir: params.output_dir_base,
-            log_output_dir: "${params.log_output_dir}/process-log"
-            ]
-        )
+    } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf'
 include { run_index_SAMtools } from './index-bam.nf'
 include { calculate_sha512 } from './checksum.nf'
 
@@ -137,6 +130,10 @@ workflow mergesamfiles {
     bams_to_merge
 
     main:
+    remove_meta = Channel.value([
+        'log_output_dir': "${params.log_output_dir}/process-log"
+    ])
+
     bams_to_merge
         .map{ [it.sample_id, it.bam] }
         .groupTuple()
@@ -144,15 +141,10 @@ workflow mergesamfiles {
 
     run_MergeSamFiles_Picard(input_ch_merge)
 
-    // remove_unmerged_BAMs(
-    //     run_MergeSamFiles_Picard.out.output_ch_deletion.flatten(),
-    //     "merge_complete"
-    // )
-
     deduplicate_records_SAMtools(run_MergeSamFiles_Picard.out.merged_bam)
 
     remove_merged_BAM(
-        deduplicate_records_SAMtools.out.bam_for_deletion.flatten(),
+        remove_meta.combine(deduplicate_records_SAMtools.out.bam_for_deletion.flatten()),
         "deduplication_complete"
     )
 
