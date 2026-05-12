@@ -12,6 +12,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Usage of `addParams`
 
+### Fixed
+
+- Proper following of `save_intermediate_files` param with QC process
+
 ## [2.0.0] - 2026-04-23
 
 ### Added
