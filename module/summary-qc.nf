@@ -22,7 +22,7 @@ process run_GetPileupSummaries_GATK {
     container params.docker_image_gatk
     publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
-      when: params.save_intermediate_files,
+      enabled: params.save_intermediate_files,
       pattern: '*.table'
 
     tag "${sample_id}-${interval_id}"
