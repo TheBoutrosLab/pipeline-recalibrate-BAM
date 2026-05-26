@@ -81,9 +81,11 @@ workflow {
         'output_dir_base': params.output_dir_base
     ])
 
-    remove_meta = Channel.value([
-        'log_output_dir': "${params.log_output_dir}/process-log"
-    ])
+    module_meta = base_meta.map{ base_m ->
+        base_m + [
+            'log_output_dir': "${params.log_output_dir}/process-log"
+        ]
+    }
 
     samples_with_index
         .map { sample -> [sample.bam, sample.index] }
@@ -91,7 +93,7 @@ workflow {
         .set{ input_ch_validate }
 
     run_validate_PipeVal(
-        base_meta.combine(input_ch_validate)
+        module_meta.combine(input_ch_validate)
     )
 
     run_validate_PipeVal.out.validation_result
@@ -105,7 +107,7 @@ workflow {
     *   Interval extraction and splitting
     */
     extract_GenomeIntervals(
-        base_meta.map{ metadata -> [metadata, params.reference_fasta_dict] }
+        module_meta.map{ metadata -> [metadata, params.reference_fasta_dict] }
     )
 
     extract_GenomeIntervals.out.genomic_intervals
@@ -243,7 +245,7 @@ workflow {
         .set{ input_ch_delete_interval_bams }
 
     remove_interval_BAMs(
-        remove_meta.combine(input_ch_delete_interval_bams),
+        module_meta.combine(input_ch_delete_interval_bams),
         "ready_to_delete"
     )
 
