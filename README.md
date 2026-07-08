@@ -7,10 +7,11 @@
 3. [Flow Diagram](#flow-diagram)
 4. [Pipeline Steps](#pipeline-steps)
 5. [Inputs](#inputs)
-5. [Outputs](#outputs)
-6. [Discussions](#discussions)
-7. [Contributors](#contributors)
-8. [References](#references)
+6. [Profiles](#profiles)
+7. [Outputs](#outputs)
+8. [Discussions](#discussions)
+9. [Contributors](#contributors)
+10. [References](#references)
 
 ## Overview
 
@@ -152,6 +153,10 @@ For normal-only or tumour-only samples, exclude the fields for the other state.
 | `bundle_v0_dbsnp138_vcf_gz` | Yes | path | Absolute path to dbsnp file, e.g., `/hot/resource/tool-specific-input/GATK/GRCh38/resources_broad_hg38_v0_Homo_sapiens_assembly38.dbsnp138.vcf.gz` |
 | `bundle_contest_hapmap_3p3_vcf_gz` | Yes | path | Absolute path to HapMap 3.3 biallelic sites file, e.g., `/hot/resource/tool-specific-input/GATK/GRCh38/Biallelic/hapmap_3.3.hg38.BIALLELIC.PASS.2021-09-01.vcf.gz` |
 | `work_dir` | optional | path | Path of working directory for Nextflow. When included in the sample config file, Nextflow intermediate files and logs will be saved to this directory. With ucla_cds, the default is `/scratch` and should only be changed for testing/development. Changing this directory to `/hot` or `/tmp` can lead to high server latency and potential disk space limitations, respectively. |
+| `apptainer_library` | optional | path | Path to readable Apptainer library directory containing any existing Apptainer images. |
+| `apptainer_cache` | optional | path | Path to writable Apptainer cache directory where images will be cached. |
+| `singularity_library` | optional | path | Path to readable Singularity library directory containing any existing Singularity images. |
+| `singularity_cache` | optional | path | Path to writable Singularity cache directory where images will be cached. |
 | `base_resource_update` | optional | namespace | Namespace of parameters to update base resource allocations in the pipeline. Usage and structure are detailed in `template.config` and below. |
 
 
@@ -223,6 +228,16 @@ base_resource_update {
     ]
 }
 ```
+
+---
+
+## Profiles
+
+Profiles can be selected to control which containerization system will be used. Profile selection can be passed to the Nextflow run command using `-profile`. Available profiles:
+
+- `docker` - Use Docker as the containerization system
+- `apptainer` - Use Apptainer as the containerization system
+- `singularity` - Use Singularity as the containerization system
 
 ---
 
