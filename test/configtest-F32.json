@@ -514,6 +514,9 @@
       "set_retry": "closure()",
       "setup_retry": "closure()"
     },
+    "singularity": {
+      "enabled": false
+    },
     "timeline": {
       "enabled": true,
       "file": "/tmp/outputs/recalibrate-BAM-VER.SI.ON/TWGSAMIN000001/log-recalibrate-BAM-VER.SI.ON-19970704T165655Z/nextflow-log/timeline.html"
