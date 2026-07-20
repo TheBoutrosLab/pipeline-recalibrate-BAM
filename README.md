@@ -35,7 +35,7 @@ This pipeline takes BAMs and corresponding indices from [pipeline-align-DNA](htt
 ```
 python submit_nextflow_pipeline.py \
        --nextflow_script /path/to/main.nf \
-       --nextflow_config /path/to/call-recalibrate-bam.config \
+       --nextflow_config /path/to/recalibrate-bam.config \
        --nextflow_yaml /path/to/sample.yaml \
        --pipeline_run_name job_name \
        --partition_type <type> \
@@ -139,7 +139,7 @@ For normal-only or tumour-only samples, exclude the fields for the other state.
 | `blcds_registered_dataset` | Yes | boolean | Set to true when using BLCDS folder structure; use false for now |
 | `output_dir` | Yes | string | Need to set if `blcds_registered_dataset = false` |
 | `save_intermediate_files` | Yes | boolean | Set to false to disable publishing of intermediate files; true otherwise; disabling option will delete intermediate files to allow for processing of large BAMs |
-| `aligner` | Yes | string | Original aligner used to align input BAMs; formatted as \<aligner\>-\<aligner-version\>. Accepted aligners: `BWA-MEM2`, `minibwa`, and `HISAT2`. |
+| `aligner` | Yes | string | Original aligner used to align input BAMs; formatted as \<aligner\>-\<version\>. Accepted aligners: `BWA-MEM2`, `minibwa`, and `HISAT2`. |
 | `cache_intermediate_pipeline_steps` | No | boolean | Set to true to enable process caching from Nextflow; defaults to false |
 | `is_emit_original_quals` | Yes | boolean | Set to true to emit original quality scores; false to omit |
 | `is_DOC_run` | Yes | boolean | Set to true to run GATK DepthOfCoverage (very time-consuming for large BAMs); false otherwise |
@@ -164,7 +164,7 @@ The below parameters have default values defined in [`default.config`](./config/
 
 | Optional Parameter | Type | Description |
 | :------------------| :----| :-----------|
-| `metapipeline_delete_input_bams` | boolean | Set to true to delete the input BAM files once the initial processing step is complete. **WARNING**: This option should NOT be used for individual runs of recalibate-BAM; it's intended for metapipeline-DNA to optimize disk space usage by removing files that are no longer needed from the `workDir`. |
+| `metapipeline_delete_input_bams` | boolean | Set to true to delete the input BAM files once the initial processing step is complete. **WARNING**: This option should NOT be used for individual runs of recalibrate-BAM; it's intended for metapipeline-DNA to optimize disk space usage by removing files that are no longer needed from the `workDir`. |
 | `metapipeline_final_output_dir` | string | Absolute path for the final output directory of metapipeline-DNA that's expected to contain the output BAM from align-DNA. **WARNING**: This option should not be used for individual runs of recalibrate-BAM; it's intended for metapipeline-DNA to optimize disk space usage. |
 | `metapipeline_states_to_delete` | list | List of states for which to delete input BAMs. **WARNING**: This option should not be used for individual runs of recalibrate-BAM; it's intended for metapipeline-DNA to optimize disk space usage. |
 | `cache_intermediate_pipeline_steps` | boolean | Enable process caching from Nextflow. |
@@ -245,10 +245,10 @@ Profiles can be selected to control which containerization system will be used. 
 
 | Output | Description |
 |:-------|:------------|
-| `<aligner>_<GATK>_<dataset_id>_<sample_id>.bam` | Post-processes BAM |
-| `<aligner>_<GATK>_<dataset_id>_<sample_id>.bam.sha512` | Post-processes BAM SHA512 checksum |
-| `<aligner>_<GATK>_<dataset_id>_<sample_id>.bam.bai` | Post-processes BAM index |
-| `<aligner>_<GATK>_<dataset_id>_<sample_id>.bam.bai.sha512` | Post-processes BAM index SHA512 checksum |
+| `<aligner>_<GATK>_<dataset_id>_<sample_id>.bam` | Post-processed BAM |
+| `<aligner>_<GATK>_<dataset_id>_<sample_id>.bam.sha512` | Post-processed BAM SHA512 checksum |
+| `<aligner>_<GATK>_<dataset_id>_<sample_id>.bam.bai` | Post-processed BAM index |
+| `<aligner>_<GATK>_<dataset_id>_<sample_id>.bam.bai.sha512` | Post-processed BAM index SHA512 checksum |
 | `report.html`, `timeline.html` and `trace.txt` | Nextflow report, timeline and trace files |
 | `*.command.*` | Process specific logging files created by nextflow |
 
