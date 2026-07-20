@@ -10,7 +10,7 @@ dataset_id:
 aligner:
   type: 'AlignerTool'
   required: true
-  help: 'Aligner used to align input BAMs. Provided as <Aligner>-<Aligner-version>'
+  help: 'Aligner used to align input BAMs. Provided as <aligner>-<version>'
 output_dir:
   type: 'Path'
   mode: 'w'
