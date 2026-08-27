@@ -272,4 +272,8 @@ workflow {
         input_ch_summary_intervals,
         input_ch_merged_bams
     )
+
+    workflow.onComplete = {
+        WorkflowFinalizer.completeWorkflow(workflow, params);
+    }
 }
