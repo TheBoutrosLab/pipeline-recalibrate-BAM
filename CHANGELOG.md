@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [2.5.2] - 2026-10-09
+
 ### Changed
 
 - Update config submodule to fix task property access
@@ -167,4 +169,5 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [2.4.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.3.0...v2.4.0
 [2.5.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.4.0...v2.5.0
 [2.5.1]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.0...v2.5.1
-[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.1...HEAD
+[2.5.2]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.1...v2.5.2
+[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.2...HEAD
