@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-10-14
+
 ### Added
 
 - Add support for `BWA-MEM3` aligner source.
@@ -174,4 +176,5 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [2.5.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.4.0...v2.5.0
 [2.5.1]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.0...v2.5.1
 [2.5.2]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.1...v2.5.2
-[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.2...HEAD
+[2.6.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.2...v2.6.0
+[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.6.0...HEAD
