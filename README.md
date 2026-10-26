@@ -21,7 +21,7 @@ This pipeline takes BAMs and corresponding indices from [pipeline-align-DNA](htt
 
 ## How To Run
 
-**Requirements**: Currently supported Nextflow versions: `23.04.2`
+**Requirements**: Currently supported Nextflow versions: `25.10.5` (requires Java 17 or later)
 
 **The pipeline is currently configured to run on a SINGLE NODE mode with normal only, tumor only, normal-tumor paired, or multiple normal and tumor samples.**
 
