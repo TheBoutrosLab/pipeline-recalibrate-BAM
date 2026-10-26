@@ -15,16 +15,20 @@ String get_root_directory(String directory) {
     Nextflow process to check if given input can be deleted.
 
     input:
+        META: map with metapipeline_final_output_dir, whose root directory is mounted in the container
         file_to_check: path to file to be checked for deletion
 */
 process check_deletion_status {
     container params.docker_image_pipeval
-    containerOptions "${params.container_mount_flag} ${get_root_directory(params.metapipeline_final_output_dir)}:${get_root_directory(params.metapipeline_final_output_dir)}"
 
-    ext log_dir_suffix: { "-${task.index}" }
+    ext log_dir_suffix: { "-${task.index}" },
+        containerOptions: {
+            def root_dir = get_root_directory(META.metapipeline_final_output_dir)
+            "${params.container_mount_flag} ${root_dir}:${root_dir}"
+        }
 
     input:
-    path(file_to_check)
+    tuple val(META), path(file_to_check)
 
     output:
     tuple path(file_to_check), env('DELETE_INPUT'), emit: file_to_delete
@@ -77,7 +81,11 @@ workflow delete_input {
         'log_output_dir': "${params.log_output_dir}/process-log"
     ])
 
-    check_deletion_status(files_to_delete)
+    check_meta = Channel.value([
+        'metapipeline_final_output_dir': params.containsKey('metapipeline_final_output_dir') ? params.metapipeline_final_output_dir : null
+    ])
+
+    check_deletion_status(check_meta.combine(files_to_delete))
 
     check_deletion_status.out.file_to_delete
         .filter{ it[1] == 'true' }
