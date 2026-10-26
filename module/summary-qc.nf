@@ -23,7 +23,8 @@ process run_GetPileupSummaries_GATK {
     publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
       enabled: params.save_intermediate_files,
-      pattern: '*.table'
+      pattern: '*.table',
+      failOnError: false
 
     tag "${sample_id}-${interval_id}"
 
@@ -84,7 +85,8 @@ process run_GatherPileupSummaries_GATK {
     container params.docker_image_gatk
     publishDir path: "${META.output_dir_base}/QC/${task.process.replace(':', '/')}",
       mode: "copy",
-      pattern: '*.table'
+      pattern: '*.table',
+      failOnError: false
 
     tag "${sample_id}"
 
@@ -136,7 +138,8 @@ process run_CalculateContamination_GATK {
     container params.docker_image_gatk
     publishDir path: "${META.output_dir_base}/QC/${task.process.replace(':', '/')}",
       mode: "copy",
-      pattern: '*.table'
+      pattern: '*.table',
+      failOnError: false
 
     ext log_dir_suffix: { "-${sample_id}" }
 
@@ -199,7 +202,8 @@ process run_DepthOfCoverage_GATK {
     container params.docker_image_gatk
     publishDir path: "${META.output_dir_base}/QC/${task.process.replace(':', '/')}",
       mode: "copy",
-      pattern: '*_DOC*'
+      pattern: '*_DOC*',
+      failOnError: false
 
     ext log_dir_suffix: { "-${sample_id}" }
 

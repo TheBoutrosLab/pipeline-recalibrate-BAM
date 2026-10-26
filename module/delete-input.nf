@@ -1,5 +1,3 @@
-nextflow.enable.dsl=2
-
 include { remove_intermediate_files } from '../external/pipeline-Nextflow-module/modules/common/intermediate_file_removal/main.nf'
 
 String get_root_directory(String directory) {
@@ -29,7 +27,7 @@ process check_deletion_status {
     path(file_to_check)
 
     output:
-    tuple path(file_to_check), env(DELETE_INPUT), emit: file_to_delete
+    tuple path(file_to_check), env('DELETE_INPUT'), emit: file_to_delete
 
     when:
     params.metapipeline_delete_input_bams
