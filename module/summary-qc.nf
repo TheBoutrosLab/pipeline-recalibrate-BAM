@@ -150,7 +150,7 @@ process run_CalculateContamination_GATK {
     output:
     path("*-tumor-segmentation.table")
     path("*_alone.table"), emit: contamination
-    path("*_with-matched-normal.table"), emit: tumor_normal_matched_contamination optional true
+    path("*_with-matched-normal.table"), emit: tumor_normal_matched_contamination, optional: true
 
     script:
     sample_id = (sample_type == 'normal') ? normal_id : tumor_id
