@@ -27,7 +27,8 @@ process run_RealignerTargetCreator_GATK {
     publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
       enabled: params.save_intermediate_files,
-      pattern: "*_RTC_*.intervals"
+      pattern: "*_RTC_*.intervals",
+      failOnError: false
 
     ext log_dir_suffix: { "-${interval_id}" }
 
@@ -97,7 +98,8 @@ process run_IndelRealigner_GATK {
       mode: "copy",
       enabled: params.save_intermediate_files,
       pattern: "*indelrealigned*",
-      saveAs: { filename -> (file(filename).getExtension() == "bai") ? "${file(filename).baseName}.bam.bai" : "${filename}" }
+      saveAs: { filename -> (file(filename).getExtension() == "bai") ? "${file(filename).baseName}.bam.bai" : "${filename}" },
+      failOnError: false
 
     ext log_dir_suffix: { "-${interval_id}" }
 

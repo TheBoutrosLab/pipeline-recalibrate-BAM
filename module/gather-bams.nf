@@ -41,7 +41,8 @@ process run_GatherBamFiles_Picard {
     container params.docker_image_picard
     publishDir path: "${META.output_dir_base}/output",
         mode: "copy",
-        pattern: "${output_file_name}.bam*"
+        pattern: "${output_file_name}.bam*",
+        failOnError: false
 
     ext log_dir_suffix: { "-${sample_id}" }
 

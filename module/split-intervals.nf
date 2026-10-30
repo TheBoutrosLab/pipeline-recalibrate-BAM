@@ -19,7 +19,8 @@ process run_SplitIntervals_GATK {
     publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
                mode: "copy",
                pattern: "*-contig.interval_list",
-               enabled: params.save_intermediate_files
+               enabled: params.save_intermediate_files,
+               failOnError: false
 
     input:
     val(META)

@@ -34,7 +34,8 @@ process run_BaseRecalibrator_GATK {
     publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
       enabled: params.save_intermediate_files,
-      pattern: "*.grp"
+      pattern: "*.grp",
+      failOnError: false
 
     ext log_dir_suffix: { "-${sample_id}-${interval_id}" }
 
@@ -95,7 +96,8 @@ process run_GatherBQSRReports_GATK {
     container params.docker_image_gatk
     publishDir path: "${META.output_dir_base}/QC/${task.process.replace(':', '/')}",
       mode: "copy",
-      pattern: "*.grp"
+      pattern: "*.grp",
+      failOnError: false
 
     ext log_dir_suffix: { "-${sample_id}" }
 
@@ -144,7 +146,8 @@ process run_ApplyBQSR_GATK {
     publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
       mode: "copy",
       enabled: params.save_intermediate_files,
-      pattern: "*_recalibrated-*"
+      pattern: "*_recalibrated-*",
+      failOnError: false
 
     ext log_dir_suffix: { "-${sample_id}-${interval_id}" }
 
@@ -345,7 +348,7 @@ workflow recalibrate_base {
         )
     } else {
         // Pipeline inputs directly sent to BQSR, handle deletion based on metapipeline params
-        Channel.from(params.samples_to_process)
+        Channel.fromList(params.samples_to_process)
             .filter{ params.metapipeline_states_to_delete.contains(it.sample_type) }
             .map{ sample -> sample.bam }
             .flatten()

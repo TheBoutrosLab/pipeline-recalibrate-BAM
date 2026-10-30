@@ -1,8 +1,5 @@
 #!/usr/bin/env nextflow
 
-nextflow.enable.dsl=2
-
-
 log.info """\
 ==============================================
 R E C A L I B R A T E - B A M  P I P E L I N E
@@ -68,7 +65,7 @@ workflow {
     /**
     *   Input validation
     */
-    Channel.from(params.samples_to_process)
+    Channel.fromList(params.samples_to_process)
         .map { sample ->
             sample["index"] = indexFile(sample.bam)
             return sample
@@ -257,7 +254,7 @@ workflow {
         .set{ input_ch_merged_bams }
 
     summary_intervals = (params.is_targeted) ?
-        Channel.from(params.intervals).collect() :
+        Channel.of(params.intervals).collect() :
         genomic_intervals
 
     summary_intervals.combine(input_ch_merged_bams)
