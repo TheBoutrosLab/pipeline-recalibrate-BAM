@@ -24,12 +24,14 @@ process run_MergeSamFiles_Picard {
     publishDir path: "${META.output_dir_base}/intermediate/${task.process.replace(':', '/')}",
         mode: "copy",
         enabled: !params.parallelize_by_chromosome && params.save_intermediate_files,
-        pattern: "${output_file_name}"
+        pattern: "${output_file_name}",
+        failOnError: false
 
     publishDir path: "${META.output_dir_base}/output",
         mode: "copy",
         enabled: params.parallelize_by_chromosome,
-        pattern: "${output_file_name}"
+        pattern: "${output_file_name}",
+        failOnError: false
 
     ext log_dir_suffix: { "-${sample_id}" }
 
@@ -91,7 +93,8 @@ process deduplicate_records_SAMtools {
     container params.docker_image_samtools
     publishDir path: "${META.output_dir_base}/output",
         mode: "copy",
-        pattern: "${output_file_name}"
+        pattern: "${output_file_name}",
+        failOnError: false
 
     ext log_dir_suffix: { "-${sample_id}" }
 

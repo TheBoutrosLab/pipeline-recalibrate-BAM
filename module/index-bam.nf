@@ -14,7 +14,8 @@ process run_index_SAMtools {
     container params.docker_image_samtools
     publishDir path: "${META.output_dir_base}/output",
         mode: "copy",
-        pattern: "*.bai"
+        pattern: "*.bai",
+        failOnError: false
 
     ext log_dir_suffix: { "-${sample_id}" }
 
