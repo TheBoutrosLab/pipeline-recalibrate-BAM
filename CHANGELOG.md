@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-10-30
+
 ### Changed
 
 - Update to support Nextflow v25.10.5
@@ -181,4 +183,5 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [2.5.1]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.0...v2.5.1
 [2.5.2]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.1...v2.5.2
 [2.6.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.2...v2.6.0
-[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.6.0...HEAD
+[3.0.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.6.0...v3.0.0
+[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v3.0.0...HEAD
