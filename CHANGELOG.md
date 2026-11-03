@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed
+
+- Sanitize sample IDs consistently in contamination QC so samples whose IDs change when sanitized (e.g. `WGS_IL_T_1`) are no longer dropped from `run_CalculateContamination_GATK` ([#27](https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/issues/27))
+- Sanitize sample IDs when selecting interval BAMs for deletion so `remove_interval_BAMs` still matches samples after the contamination QC change
+
 ## [3.0.0] - 2026-10-30
 
 ### Changed

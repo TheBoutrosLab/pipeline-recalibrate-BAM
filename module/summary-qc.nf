@@ -262,7 +262,7 @@ workflow contamination_qc {
     bams_for_qc
         .map{ input_bam ->
             [
-                input_bam.sample_id,
+                sanitize_string(input_bam.sample_id),
                 input_bam.bam,
                 input_bam.bam_index,
                 input_bam.interval_id,
