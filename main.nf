@@ -224,13 +224,13 @@ workflow {
     *   Remove interval BAMs
     */
     output_ch_bqsr
-        .map{ bqsred_bams -> [bqsred_bams.sample_id, bqsred_bams.bam] }
+        .map{ bqsred_bams -> [sanitize_string(bqsred_bams.sample_id), bqsred_bams.bam] }
         .groupTuple()
         .map{ grouped_bams -> [grouped_bams[0], ['bams': grouped_bams[1]]] }
         .set{ interval_bams_to_delete }
 
     merge_bams.out.output_ch_merge_bams
-        .map{ merged_bam -> merged_bam.sample_id }
+        .map{ merged_bam -> sanitize_string(merged_bam.sample_id) }
         .set{ samples_merged }
 
     interval_bams_to_delete
