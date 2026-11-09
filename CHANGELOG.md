@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [3.0.1] - 2026-11-09
+
 ### Fixed
 
 - Sanitize sample IDs consistently in contamination QC so samples whose IDs change when sanitized (e.g. `WGS_IL_T_1`) are no longer dropped from `run_CalculateContamination_GATK` ([#27](https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/issues/27))
@@ -189,4 +191,5 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [2.5.2]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.1...v2.5.2
 [2.6.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.2...v2.6.0
 [3.0.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.6.0...v3.0.0
-[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v3.0.0...HEAD
+[3.0.1]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v3.0.0...v3.0.1
+[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v3.0.1...HEAD
