@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-11-20
+
 ### Changed
 
 - Disable `ociAutoPull` when library or cache dir is given
@@ -196,4 +198,5 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [2.6.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.5.2...v2.6.0
 [3.0.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v2.6.0...v3.0.0
 [3.0.1]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v3.0.0...v3.0.1
-[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v3.0.1...HEAD
+[3.1.0]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v3.0.1...v3.1.0
+[unreleased]: https://github.com/TheBoutrosLab/pipeline-recalibrate-BAM/compare/v3.1.0...HEAD
